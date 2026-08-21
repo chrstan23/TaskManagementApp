@@ -2,6 +2,7 @@ const express = require("express");
 const db = require("./db")
 
 const app = express();
+app.use(express.json());
 
 const PORT = 5000;
 
@@ -42,6 +43,22 @@ app.get("/api/tasks/:id", (req, res) => {
     });
 });
 
+//POST API
+app.post("/api/tasks", (req, res) => {
+    const { title, description, status } = req.body;
+
+    const sql = "INSERT INTO tbl_task (title, description, status) VALUES (?, ?, ?)";
+
+    db.query(sql, [title, description, status], (err, result) => {
+        if(err){
+            console.error("Database error: ", err);
+
+            return res.status(500).json({ error: "Failed to Create task" });
+        }
+
+        res.status(201).json ({ message: "Task created successfully", taskId: result.insertId });
+    });
+});
 
 
 app.listen(PORT, () => {
