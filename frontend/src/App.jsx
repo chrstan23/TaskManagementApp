@@ -4,9 +4,13 @@ import './App.css'
 function App() {
   const [tasks, setTasks] = useState([]);
   
+  //for new tasks
   const [showAddForm, setShowAddForm] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  //for update tasks
+  const [editingTaskId, setEditingTaskId] = useState(null);
 
   const getTasks = () => {
   fetch("http://localhost:5000/api/tasks")
@@ -48,7 +52,44 @@ function App() {
     .catch((error) => {
       console.error("Database error: ", error);
     });
-  }
+  };
+
+  const editTask = (task) => {
+    setEditingTaskId(task.id);
+    setTitle(task.title);
+    setDescription(task.description);
+  };
+
+  const updateTask = () => {
+
+    const updatedTask = {
+    title: title,
+    description: description,
+    status: "Incomplete"
+    }
+
+    fetch(`http://localhost:5000/api/tasks/${editingTaskId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(updatedTask)
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+
+      getTasks();
+
+      setEditingTaskId(null);
+      setTitle("");
+      setDescription("");
+    })
+    .catch((error) => {
+      console.error("Error updating task:", error);
+    });
+  };
+  
 
 return (
   <div>
@@ -70,12 +111,33 @@ return (
       </div>
     )}
 
+    {editingTaskId !== null && (
+      <div>
+        <h2>Edit Task</h2>
+
+        <label>Title:</label><br />
+        <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} /><br />
+        <label>Description:</label><br />
+        <textarea value={description} onChange={(event) => setDescription(event.target.value)} /><br />
+        <button onClick={updateTask}>Update</button>
+        <button
+          onClick={() => {
+            setEditingTaskId(null);
+            setTitle("");
+            setDescription("");
+          }}
+          >
+          Cancel
+        </button>
+      </div>
+    )}
+
     {tasks.map((task) => (
       <div key={task.id}>
         <h2>{task.title}</h2>
         <p>{task.description}</p>
         <p>Status: {task.status}</p>
-        <button>Update</button>
+        <button onClick={() => editTask(task)}>Update</button>
         <button>Delete</button>
       </div>
     ))}
