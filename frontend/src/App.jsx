@@ -12,6 +12,12 @@ function App() {
   //for update tasks
   const [editingTaskId, setEditingTaskId] = useState(null);
 
+  //for filtering status
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  //for searching task title
+  const [searchTitle, setSearchTitle] = useState("");
+
   const getTasks = () => {
   fetch("http://localhost:5000/api/tasks")
     .then((response) => response.json())
@@ -89,6 +95,29 @@ function App() {
       console.error("Error updating task:", error);
     });
   };
+
+  const deleteTask = (id) => {
+  fetch(`http://localhost:5000/api/tasks/${id}`, {
+    method: "DELETE"
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+
+      getTasks();
+    })
+    .catch((error) => {
+      console.error("Error deleting task:", error);
+    });
+  };
+
+  const filteredTasks = tasks.filter((task) => {
+    if (statusFilter === "all"){
+      return true;
+    }
+
+    return task.status === statusFilter;
+  });
   
 
 return (
@@ -96,10 +125,20 @@ return (
     <h1>Task Management</h1>
     <div>
       <button onClick={() => setShowAddForm(true)}>Add</button>
+
+      <div>
+        <label>Filter Tasks: </label>
+        <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+          <option value="all">All</option>
+          <option value="incomplete">Incomplete</option>
+          <option value="complete">Complete</option>
+        </select>
+      </div>
     </div>
+
     {showAddForm && (
       <div>
-        <h2>Add Task</h2>
+        <h2>Add Task</h2>      
 
         <label>Title:</label><br />
         <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} /><br />
@@ -132,13 +171,25 @@ return (
       </div>
     )}
 
-    {tasks.map((task) => (
+    {/* {tasks.map((task) => (
       <div key={task.id}>
         <h2>{task.title}</h2>
         <p>{task.description}</p>
         <p>Status: {task.status}</p>
         <button onClick={() => editTask(task)}>Update</button>
-        <button>Delete</button>
+        <button onClick={() => deleteTask(task.id)}>Delete</button>
+      </div>
+    ))} */}
+
+    {filteredTasks.map((task) => (
+      <div key={task.id}>
+        <h2>{task.title}</h2>
+        <p>{task.description}</p>
+        <p>Status: {task.status}</p>
+
+        <button onClick={() => editTask(task)}>Update</button>
+
+        <button onClick={() => deleteTask(task.id)}>Delete</button>
       </div>
     ))}
 
