@@ -151,73 +151,113 @@ function App() {
   
 
 return (
-  <div>
-    <h1>Task Management</h1>
-    <div>
-      <button onClick={() => setShowAddForm(true)}>Add</button>
+  <div className="app">
+    <div className="header">
 
-      <div>
-        <label>Search Title: </label>
-        <input type="text" value={searchTitle} onChange={(event) => setSearchTitle(event.target.value)}placeholder="Search task title"/>
+      <h1>Task Management</h1>
+      <div className="controls">
+        <button className="add-button" onClick={() => setShowAddForm(true)}>Add Task</button>
 
+        <div className="search-container">
+          <label>Search Title: </label>
+          <input className="search-input" type="text" value={searchTitle} onChange={(event) => setSearchTitle(event.target.value)}placeholder="Search task title"/>
+
+        </div>
+
+        <div className="filter-container">
+          <label>Filter Tasks: </label>
+          <select className="status-filter" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+            <option value="all">All</option>
+            <option value="Incomplete">Incomplete</option>
+            <option value="Complete">Complete</option>
+          </select>
+        </div>
       </div>
 
-      <div>
-        <label>Filter Tasks: </label>
-        <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-          <option value="all">All</option>
-          <option value="Incomplete">Incomplete</option>
-          <option value="Complete">Complete</option>
-        </select>
+      {showAddForm && (
+        <div className="modal-overlay">
+          <div className="modal">
+          <h2>Add Task</h2>      
+
+          <div className="form-group">
+            <label>Title:</label><br />
+            <input className="form-input" type="text" value={title} onChange={(event) => setTitle(event.target.value)} /><br />
+
+          </div>
+
+          <div className="form-group">
+          <label>Description:</label><br />
+          <textarea className="form-textarea" value={description} onChange={(event) => setDescription(event.target.value)}></textarea><br />
+
+          </div>
+
+          <div className="form-actions">
+          <button onClick={addTask}> Add Task</button>
+          <button onClick={() => setShowAddForm(false)}>Cancel</button>
+
+          </div>
+          <hr />
+          </div>
+        </div>
+      )}
+
+      {editingTaskId !== null && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Edit Task</h2>
+
+            <div className="form-group">
+            <label>Title:</label><br />
+            <input className="form-input" type="text" value={title} onChange={(event) => setTitle(event.target.value)} /><br />
+
+            </div>
+
+            <div className="form-group">
+            <label>Description:</label><br />
+            <textarea className="form-textarea" value={description} onChange={(event) => setDescription(event.target.value)} /><br />
+
+            </div>
+            <div className="form-actions">
+              <button onClick={updateTask}>Update</button>
+              <button
+                className="cancelButton"
+                onClick={() => {
+                  setEditingTaskId(null);
+                  setTitle("");
+                  setDescription("");
+                }}
+                >
+                Cancel
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      <div className="task-container">
+        {filteredTasks.map((task) => (
+
+          <div className="task-card" key={task.id}>
+            <div className="task-status">
+              <input type="checkbox" checked={task.status === "Complete"} onChange={() => toggleStatus(task)}/>
+              <span>{task.status}</span>
+
+            </div>
+
+            <h2>{task.title}</h2>
+            <p>{task.description}</p>
+
+            <div className="task-actions">
+              <button className="update-button" onClick={() => editTask(task)} disabled={task.status === "Complete"}>Update</button>
+              <button className="deleteButton" onClick={() => deleteTask(task.id)}>Delete</button>
+
+            </div>
+          </div>
+        ))}
+
       </div>
-    </div>
-
-    {showAddForm && (
-      <div>
-        <h2>Add Task</h2>      
-
-        <label>Title:</label><br />
-        <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} /><br />
-        <label>Description:</label><br />
-        <textarea value={description} onChange={(event) => setDescription(event.target.value)}></textarea><br />
-        <button onClick={addTask}> Add Task</button>
-        <button onClick={() => setShowAddForm(false)}>Cancel</button>
-        <hr />
       </div>
-    )}
-
-    {editingTaskId !== null && (
-      <div>
-        <h2>Edit Task</h2>
-
-        <label>Title:</label><br />
-        <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} /><br />
-        <label>Description:</label><br />
-        <textarea value={description} onChange={(event) => setDescription(event.target.value)} /><br />
-        <button onClick={updateTask}>Update</button>
-        <button
-          onClick={() => {
-            setEditingTaskId(null);
-            setTitle("");
-            setDescription("");
-          }}
-          >
-          Cancel
-        </button>
-      </div>
-    )}
-
-    {filteredTasks.map((task) => (
-      <div key={task.id}>
-        <input type="checkbox" checked={task.status === "Complete"} onChange={() => toggleStatus(task)}/>
-        <span>{task.status}</span>
-        <h2>{task.title}</h2>
-        <p>{task.description}</p>
-        <button onClick={() => editTask(task)} disabled={task.status === "Complete"}>Update</button>
-        <button onClick={() => deleteTask(task.id)}>Delete</button>
-      </div>
-    ))}
-
     </div>
   )
 }
