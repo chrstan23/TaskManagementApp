@@ -80,7 +80,26 @@ app.put("/api/tasks/:id", (req, res) => {
     });
 });
 
+//DELETE API
+app.delete("/api/tasks/:id", (req, res) => {
+    const id = req.params.id;
+
+    const sql = "DELETE from tbl_task WHERE id = ?";
+
+    db.query(sql, [id], (err, result) => {
+        if (err){
+            console.error( "Database error: ", err);
+
+            return res.status(500).json ({ error: "Failed to Delete task" });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json ({ error: "Task not found" });
+        }
+        res.json({ message: "Task deleted successfully" });
+    });
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
-})
+});
