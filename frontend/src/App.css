@@ -1,0 +1,296 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f5f5f5;
+  color: #111;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+.app {
+  min-height: 100vh;
+  padding: 40px;
+}
+
+.header {
+  max-width: 1200px;
+  margin: 0 auto 30px;
+}
+
+.header h1 {
+  margin-bottom: 25px;
+  font-size: 32px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin: 10px 5px;
+}
+
+.search-container,
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-input {
+  width: 280px;
+  padding: 10px 12px;
+  border: 1px solid #999;
+  border-radius: 6px;
+  background-color: white;
+  color: #111;
+}
+
+.status-filter {
+  padding: 10px 12px;
+  border: 1px solid #999;
+  border-radius: 6px;
+  background-color: white;
+  color: #111;
+}
+
+
+/* =========================
+   Buttons
+========================= */
+
+button {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: #111;
+  color: white;
+}
+
+button:hover {
+  background-color: #333;
+}
+
+button:disabled {
+  background-color: #ccc;
+  color: #777;
+  cursor: not-allowed;
+}
+
+.add-button {
+  padding: 11px 20px;
+  background-color: #198754;
+  color: white;
+}
+
+.update-button {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.deleteButton {
+  background-color: #dc3545;
+  color: white;
+}
+
+.cancelButton {
+  background-color: #dc3545;
+  color: white;
+  border: 1px solid #111;
+}
+
+.task-container {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.task-card {
+  width: calc(33.333% - 14px);
+  min-height: 220px;
+
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.task-card h2 {
+  margin: 15px 0 10px;
+  font-size: 20px;
+}
+
+.task-description {
+  color: #555;
+  line-height: 1.5;
+
+  flex-grow: 1;
+}
+
+.task-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.task-status input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.task-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.task-actions button {
+  flex: 1;
+}
+
+.delete-button {
+  background-color: white;
+  color: #111;
+  border: 1px solid #111;
+}
+
+.delete-button:hover {
+  background-color: #eee;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.55);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 1000;
+}
+
+.modal {
+  width: 450px;
+  max-width: 90%;
+
+  background-color: white;
+  border-radius: 10px;
+
+  padding: 30px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.modal h2 {
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: bold;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+
+  padding: 10px;
+
+  border: 1px solid #999;
+  border-radius: 6px;
+
+  background-color: white;
+  color: #111;
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  flex: 1;
+}
+
+.cancel-button {
+  background-color: white;
+  color: #111;
+  border: 1px solid #111;
+}
+
+.cancel-button:hover {
+  background-color: #eee;
+}
+
+@media (max-width: 900px) {
+  .task-card {
+    width: calc(50% - 10px);
+  }
+}
+
+@media (max-width: 600px) {
+  .app {
+    padding: 20px;
+  }
+
+  .task-card {
+    width: 100%;
+  }
+
+  .controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .search-container,
+  .filter-container {
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+}
