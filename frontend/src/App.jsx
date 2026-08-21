@@ -112,12 +112,42 @@ function App() {
   };
 
   const filteredTasks = tasks.filter((task) => {
-    if (statusFilter === "all"){
-      return true;
-    }
+    const matchesStatus =
+      statusFilter === "all" || task.status === statusFilter;
 
-    return task.status === statusFilter;
+    const matchesSearch =
+      task.title.toLowerCase().includes(searchTitle.toLowerCase());
+
+    return matchesStatus && matchesSearch;
   });
+
+  const toggleStatus = (task) => {
+    const newStatus =
+      task.status === "Complete" ? "Incomplete" : "Complete";
+
+    const updatedTask = {
+      title: task.title,
+      description: task.description,
+      status: newStatus
+    };
+
+    fetch(`http://localhost:5000/api/tasks/${task.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(updatedTask)
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+
+      getTasks();
+    })
+    .catch((error) => {
+      console.error("Error changing task status:", error);
+    });
+  };
   
 
 return (
@@ -127,11 +157,17 @@ return (
       <button onClick={() => setShowAddForm(true)}>Add</button>
 
       <div>
+        <label>Search Title: </label>
+        <input type="text" value={searchTitle} onChange={(event) => setSearchTitle(event.target.value)}placeholder="Search task title"/>
+
+      </div>
+
+      <div>
         <label>Filter Tasks: </label>
         <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
           <option value="all">All</option>
-          <option value="incomplete">Incomplete</option>
-          <option value="complete">Complete</option>
+          <option value="Incomplete">Incomplete</option>
+          <option value="Complete">Complete</option>
         </select>
       </div>
     </div>
@@ -171,24 +207,13 @@ return (
       </div>
     )}
 
-    {/* {tasks.map((task) => (
-      <div key={task.id}>
-        <h2>{task.title}</h2>
-        <p>{task.description}</p>
-        <p>Status: {task.status}</p>
-        <button onClick={() => editTask(task)}>Update</button>
-        <button onClick={() => deleteTask(task.id)}>Delete</button>
-      </div>
-    ))} */}
-
     {filteredTasks.map((task) => (
       <div key={task.id}>
+        <input type="checkbox" checked={task.status === "Complete"} onChange={() => toggleStatus(task)}/>
+        <span>{task.status}</span>
         <h2>{task.title}</h2>
         <p>{task.description}</p>
-        <p>Status: {task.status}</p>
-
-        <button onClick={() => editTask(task)}>Update</button>
-
+        <button onClick={() => editTask(task)} disabled={task.status === "Complete"}>Update</button>
         <button onClick={() => deleteTask(task.id)}>Delete</button>
       </div>
     ))}
