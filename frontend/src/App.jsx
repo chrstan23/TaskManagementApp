@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import './App.css'
+import TaskForm from "./components/TaskForm.jsx";
+import TaskCard from "./components/TaskCard.jsx";
+import Header from './components/Header.jsx';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -161,111 +164,50 @@ function App() {
 
 return (
   <div className="app">
-    <div className="header">
-
-      <h1>Task Management</h1>
-      <div className="controls">
-        <button className="add-button" onClick={() => setShowAddForm(true)}>Add Task</button>
-
-        <div className="search-container">
-          <label>Search Title: </label>
-          <input className="search-input" type="text" value={searchTitle} onChange={(event) => setSearchTitle(event.target.value)}placeholder="Search task title"/>
-
-        </div>
-
-        <div className="filter-container">
-          <label>Filter Tasks: </label>
-          <select className="status-filter" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-            <option value="all">All</option>
-            <option value="Incomplete">Incomplete</option>
-            <option value="Complete">Complete</option>
-          </select>
-        </div>
-      </div>
+    <Header 
+      onAddClick={() => setShowAddForm(true)}
+      searchTitle = {searchTitle}
+      setSearchTitle = {setSearchTitle}
+      statusFilter = {statusFilter}
+      setStatusFilter = {setStatusFilter}
+    />
 
       {showAddForm && (
-        <div className="modal-overlay">
-          <div className="modal">
-          <h2>Add Task</h2>      
-
-          <div className="form-group">
-            <label>Title:</label><br />
-            <input className="form-input" type="text" value={title} onChange={(event) => setTitle(event.target.value)} /><br />
-
-          </div>
-
-          <div className="form-group">
-          <label>Description:</label><br />
-          <textarea className="form-textarea" value={description} onChange={(event) => setDescription(event.target.value)}></textarea><br />
-
-          </div>
-
-          <div className="form-actions">
-          <button onClick={addTask}> Add Task</button>
-          <button onClick={() => setShowAddForm(false)}>Cancel</button>
-
-          </div>
-          <hr />
-          </div>
-        </div>
+        <TaskForm
+          mode="add"
+          title = {title}
+          description = {description}
+          setTitle = {setTitle}
+          setDescription = {setDescription}
+          onSubmit = {addTask}
+          onCancel = {() => { setShowAddForm(false); setTitle(""); setDescription("");
+          }}
+        />
       )}
 
       {editingTaskId !== null && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>Edit Task</h2>
-
-            <div className="form-group">
-            <label>Title:</label><br />
-            <input className="form-input" type="text" value={title} onChange={(event) => setTitle(event.target.value)} /><br />
-
-            </div>
-
-            <div className="form-group">
-            <label>Description:</label><br />
-            <textarea className="form-textarea" value={description} onChange={(event) => setDescription(event.target.value)} /><br />
-
-            </div>
-            <div className="form-actions">
-              <button onClick={updateTask}>Update</button>
-              <button
-                className="cancelButton"
-                onClick={() => {
-                  setEditingTaskId(null);
-                  setTitle("");
-                  setDescription("");
-                }}
-                >
-                Cancel
-              </button>
-            </div>
-
-          </div>
-        </div>
+        <TaskForm
+          mode="edit"
+          title = {title}
+          description = {description}
+          setTitle = {setTitle}
+          setDescription = {setDescription}
+          onSubmit = {updateTask}
+          onCancel = {() => { setEditingTaskId(null); setTitle(""); setDescription(""); }}
+          />
       )}
 
       <div className="task-container">
         {filteredTasks.map((task) => (
-
-          <div className="task-card" key={task.id}>
-            <div className="task-status">
-              <input type="checkbox" checked={task.status === "Complete"} onChange={() => toggleStatus(task)}/>
-              <span>{task.status}</span>
-
-            </div>
-
-            <h2>{task.title}</h2>
-            <p>{task.description}</p>
-
-            <div className="task-actions">
-              <button className="update-button" onClick={() => editTask(task)} disabled={task.status === "Complete"}>Update</button>
-              <button className="deleteButton" onClick={() => deleteTask(task.id)}>Delete</button>
-
-            </div>
-          </div>
+          <TaskCard
+            key = {task.id}
+            task = {task}
+            onToggleStatus = {toggleStatus}
+            onEdit = {editTask}
+            onDelete = {deleteTask}
+          />
         ))}
 
-      </div>
       </div>
     </div>
   )
