@@ -54,6 +54,9 @@ function App() {
       getTasks();
       setTitle("");
       setDescription("");
+      setShowAddForm(false);
+
+      alert("Task added successfully!");
     })
     .catch((error) => {
       console.error("Database error: ", error);
@@ -90,6 +93,7 @@ function App() {
       setEditingTaskId(null);
       setTitle("");
       setDescription("");
+      alert("Task updated successfully!");
     })
     .catch((error) => {
       console.error("Error updating task:", error);
@@ -97,6 +101,10 @@ function App() {
   };
 
   const deleteTask = (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this task?");
+    if(!confirmDelete){
+      return;
+    }
   fetch(`http://localhost:5000/api/tasks/${id}`, {
     method: "DELETE"
   })
@@ -105,6 +113,7 @@ function App() {
       console.log(data);
 
       getTasks();
+      alert("Task deleted successfully!");
     })
     .catch((error) => {
       console.error("Error deleting task:", error);
